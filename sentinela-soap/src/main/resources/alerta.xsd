@@ -1,0 +1,54 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://sentinela.com.br/soap"
+           xmlns:tns="http://sentinela.com.br/soap"
+           elementFormDefault="qualified">
+
+    <xs:element name="consultarAlertasRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="regiaoId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="consultarAlertasResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="alertas" type="tns:AlertaDto"
+                            maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="processarLeituraRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="regiaoId"    type="xs:long"/>
+                <xs:element name="temperatura" type="xs:double"/>
+                <xs:element name="umidade"     type="xs:double"/>
+                <xs:element name="iuv"         type="xs:double"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="processarLeituraResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="hri"         type="xs:double"/>
+                <xs:element name="nivelAlerta" type="xs:string"/>
+                <xs:element name="mensagem"    type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="AlertaDto">
+        <xs:sequence>
+            <xs:element name="id"       type="xs:long"/>
+            <xs:element name="nivel"    type="xs:string"/>
+            <xs:element name="mensagem" type="xs:string"/>
+            <xs:element name="ativo"    type="xs:boolean"/>
+            <xs:element name="nomeRegiao" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

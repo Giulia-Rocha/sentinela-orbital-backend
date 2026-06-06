@@ -42,7 +42,7 @@ A aplicação `sentinela-orbital` atua como consumidora do serviço `sentinela-s
 
 ## 8. Tecnologias Utilizadas
 - **Backend:** Java 21, Spring Boot.
-- **Banco de Dados:** PostgreSQL (Persistência) e Flyway (Migrações).
+- **Banco de Dados:** PostgreSQL (Persistência) e Flyway (Migrações).  
 - **Segurança:** JSON Web Token (JWT).
 - **Documentação:** Swagger/OpenAPI.
 - **Interoperabilidade:** SOAP/XML e REST/JSON.

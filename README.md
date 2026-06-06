@@ -1,60 +1,84 @@
-# Relatório de Entrega: Global Solution 2026 - Space Connect (SOA)
+# 🛰️ Sentinela Orbital & SOAP - Space Connect
 
-**Projeto:** Sentinela Orbital & SOAP  
-**Equipe:** [Inserir Nomes e RMs Aqui]
-
----
-
-## 1. Descrição da Solução Proposta
-O sistema **Sentinela** é uma solução de monitoramento climático avançado que integra dados de sensores terrestres com serviços espaciais (CPTEC/INPE). O foco principal é a detecção precoce de ondas de calor e radiação UV extrema, utilizando o índice HRI (Heat Risk Index) para disparar alertas automáticos para populações vulneráveis.
-
-## 2. Problema Resolvido
-A crise climática global tem aumentado a frequência de eventos de calor extremo, que causam milhares de mortes anualmente. Muitos municípios não possuem sistemas integrados que transformem dados brutos de satélite em alertas acionáveis. O projeto resolve isso através de uma arquitetura interoperável que processa dados complexos e disponibiliza informações simplificadas via Web e Mobile.
-
-## 3. Objetivos da Aplicação
-- Monitorar múltiplas regiões geográficas em tempo real.
-- Integrar dados externos do CPTEC/INPE para previsões de 7 dias.
-- Disponibilizar um serviço robusto de cálculo de risco (HRI) via SOAP para integração com outros sistemas de defesa civil.
-- Prover uma API REST segura (JWT) para consumo por aplicações front-end e mobile.
-
-## 4. Arquitetura da Solução e Diagrama SOA
-A solução utiliza os princípios SOA:
-- **Baixo Acoplamento:** O serviço de cálculo (SOAP) é independente da API de gerenciamento (REST).
-- **Interoperabilidade:** Uso de JSON (REST) e XML (SOAP).
-- **Contratos de Serviço:** Definidos via WSDL (SOAP) e OpenAPI/Swagger (REST).
-
-*(Inserir aqui o Diagrama de Arquitetura SOA)*
-
-## 5. Explicação da API REST
-A API `sentinela-orbital` é o núcleo de gerenciamento:
-- **Endpoints:** `/api/auth` (Autenticação), `/api/regioes` (CRUD de Regiões), `/api/leituras` (Processamento), `/api/alertas` (Consulta de Alertas ativos).
-- **Tecnologias:** Java 21, Spring Boot 3.x, Spring Security (JWT), Spring Data JPA, Hibernate, PostgreSQL.
-- **Documentação:** Swagger UI interativo disponível em `http://localhost:8080/swagger-ui.html`.
-
-## 6. Explicação do Web Service SOAP
-O serviço `sentinela-soap` foca no processamento e lógica de negócio de alto nível:
-- **WSDL:** Contrato formal para integração de sistemas legados de meteorologia.
-- **Operações:** `processarLeitura` (Cálculo matemático de HRI) e `consultarAlertas`.
-- **Tecnologias:** Spring Web Services, JAXB.
-
-## 7. Integração entre Serviços
-A aplicação `sentinela-orbital` atua como consumidora do serviço `sentinela-soap`. Ao receber uma nova leitura climática, a API REST chama o Web Service SOAP para validar os dados e calcular o risco. Além disso, a API REST consome o serviço externo do **CPTEC/INPE** via XML para buscar a previsão climática das cidades cadastradas.
-
-## 8. Tecnologias Utilizadas
-- **Backend:** Java 21, Spring Boot.
-- **Banco de Dados:** PostgreSQL (Persistência) e Flyway (Migrações).  
-- **Segurança:** JSON Web Token (JWT).
-- **Documentação:** Swagger/OpenAPI.
-- **Interoperabilidade:** SOAP/XML e REST/JSON.
-
-## 9. ODS Relacionados
-- **ODS 11 – Cidades e Comunidades Sustentáveis:** Monitoramento de riscos urbanos.
-- **ODS 13 – Ação Contra a Mudança Global do Clima:** Adaptação a eventos climáticos extremos.
-
-## 10. Evidências de Funcionamento
-*(Inserir aqui os prints dos testes: Swagger UI, Postman/SoapUI com requisições SOAP, e logs da integração)*
+Este repositório contém a solução back-end para a **Global Solution 2026 - Space Connect (SOA)**. O sistema monitora condições climáticas terrestres integrando dados espaciais para detecção precoce de ondas de calor.
 
 ---
 
-## 11. Conclusão
-O projeto demonstra com sucesso a aplicação de conceitos de SOA em um cenário real e urgente. A separação de responsabilidades entre serviços REST e SOAP permitiu criar uma arquitetura escalável, segura e pronta para integração com ecossistemas tecnológicos diversos no setor espacial e meteorológico.
+## 🏗️ Arquitetura do Projeto
+
+A solução segue os princípios de **Arquitetura Orientada a Serviços (SOA)**, dividida em dois serviços principais que se comunicam de forma interoperável:
+
+1.  **Sentinela Orbital (REST API):** Núcleo de gerenciamento, autenticação e consumo de dados externos.
+2.  **Sentinela SOAP (Web Service):** Serviço especializado em processamento pesado e cálculo do Heat Risk Index (HRI).
+
+### Tecnologias Utilizadas
+- **Linguagem:** Java 21
+- **Framework:** Spring Boot 3.x
+- **Banco de Dados:** PostgreSQL 16
+- **Segurança:** Spring Security + JWT (JSON Web Token)
+- **Documentação:** Swagger/OpenAPI (REST) e WSDL (SOAP)
+- **Integração:** REST, SOAP/XML e consumo de API externa (CPTEC/INPE)
+- **Containerização:** Docker & Docker Compose
+
+---
+
+## 🚀 Como Executar
+
+### 1. Pré-requisitos
+- Docker e Docker Compose instalados.
+- Java 21 JDK.
+- Maven (ou use o `./mvnw` incluso).
+
+### 2. Subir o Banco de Dados
+Na raiz da pasta `backend`, execute:
+```bash
+docker-compose up -d
+```
+
+### 3. Iniciar o Serviço SOAP (Porta 8081)
+O serviço SOAP deve ser iniciado primeiro, pois a API REST valida a conexão no startup.
+```bash
+cd sentinela-soap
+./mvnw spring-boot:run
+```
+- **WSDL disponível em:** `http://localhost:8081/ws/alerta.wsdl`
+
+### 4. Iniciar a API REST (Porta 8080)
+```bash
+cd sentinela-orbital
+./mvnw spring-boot:run
+```
+- **Documentação Interativa (Swagger):** `http://localhost:8080/swagger-ui.html`
+
+---
+
+## 📖 Documentação das APIs
+
+### API REST (Sentinela Orbital)
+- **Autenticação:** `/api/auth/**` (Permitido sem token)
+- **Regiões:** `/api/regioes` (CRUD completo de regiões monitoradas)
+- **Leituras:** `/api/leituras` (Recebe dados climáticos e integra com SOAP)
+- **Previsão:** `/api/previsao` (Consome dados XML do CPTEC/INPE)
+- **Alertas:** `/api/alertas` (Lista alertas ativos gerados pelo sistema)
+
+### Web Service SOAP (Sentinela SOAP)
+- **Operação `processarLeitura`:** Calcula o risco HRI e gera alertas automáticos.
+- **Operação `consultarAlertas`:** Consulta técnica de alertas para integração sistêmica.
+- *Detalhes técnicos em:* `DOCUMENTACAO_SOAP.md`
+
+---
+
+## 🌍 ODS Relacionados
+- **ODS 11 – Cidades e Comunidades Sustentáveis:** Monitoramento de riscos climáticos urbanos.
+- **ODS 13 – Ação Contra a Mudança Global do Clima:** Ferramenta de adaptação a eventos climáticos extremos.
+
+---
+
+## 👥 Equipe
+- **Nome do Integrante 1** - RMXXXXX
+- **Nome do Integrante 2** - RMXXXXX
+
+---
+
+## 📝 Conclusão
+O projeto demonstra a interoperabilidade entre diferentes padrões de serviço (REST e SOAP), garantindo uma arquitetura robusta, segura e escalável para desafios climáticos reais utilizando tecnologia espacial.

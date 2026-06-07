@@ -3,6 +3,7 @@ package br.com.sentinela.controller;
 import br.com.sentinela.domain.dto.request.LeituraRequest;
 import br.com.sentinela.domain.dto.response.LeituraResponse;
 import br.com.sentinela.service.LeituraService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/leituras")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class LeituraController {
 
     private final LeituraService leituraService;

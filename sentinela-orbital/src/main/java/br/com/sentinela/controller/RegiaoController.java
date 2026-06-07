@@ -3,6 +3,7 @@ package br.com.sentinela.controller;
 import br.com.sentinela.domain.dto.request.RegiaoRequest;
 import br.com.sentinela.domain.dto.response.RegiaoResponse;
 import br.com.sentinela.service.RegiaoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/regioes")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class RegiaoController {
 
     private final RegiaoService regiaoService;

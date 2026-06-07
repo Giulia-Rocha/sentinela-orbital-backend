@@ -70,8 +70,10 @@ O Docker Compose irá orquestrar a inicialização na ordem correta:
 ---
 
 ## 👥 Equipe
-- **Nome do Integrante 1** - RMXXXXX
-- **Nome do Integrante 2** - RMXXXXX
+- Gabriel Danius - RM 555747
+- Caio Rossini - RM 555084
+- Giulia Rocha- RM 558084
+- Carlos Eduardo - RM 556785
 
 ---
 

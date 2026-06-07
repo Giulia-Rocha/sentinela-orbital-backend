@@ -18,53 +18,48 @@ A solução segue os princípios de **Arquitetura Orientada a Serviços (SOA)**,
 - **Segurança:** Spring Security + JWT (JSON Web Token)
 - **Documentação:** Swagger/OpenAPI (REST) e WSDL (SOAP)
 - **Integração:** REST, SOAP/XML e consumo de API externa (CPTEC/INPE)
-- **Containerização:** Docker & Docker Compose
+- **Containerização:** Docker & Docker Compose (Orquestração completa)
 
 ---
 
 ## 🚀 Como Executar
 
+A solução está totalmente containerizada, o que facilita a execução e garante que todas as dependências (Banco e Serviços) subam corretamente.
+
 ### 1. Pré-requisitos
-- Docker e Docker Compose instalados.
-- Java 21 JDK.
-- Maven (ou use o `./mvnw` incluso).
+- **Docker** e **Docker Compose** instalados.
+- **Java 21 JDK** (apenas para o build inicial dos arquivos .jar).
 
-### 2. Subir o Banco de Dados
-Na raiz da pasta `backend`, execute:
+### 2. Build das Aplicações (Geração dos JARs)
+Antes de subir os containers, é necessário gerar os pacotes das aplicações Java:
 ```bash
-docker-compose up -d
+# Na raiz da pasta backend
+./sentinela-soap/mvnw clean package -DskipTests
+./sentinela-orbital/mvnw clean package -DskipTests
 ```
 
-### 3. Iniciar o Serviço SOAP (Porta 8081)
-O serviço SOAP deve ser iniciado primeiro, pois a API REST valida a conexão no startup.
+### 3. Subir o Ambiente Completo
+Com os JARs gerados, execute o comando abaixo na raiz da pasta `backend`:
 ```bash
-cd sentinela-soap
-./mvnw spring-boot:run
+docker-compose up --build -d
 ```
-- **WSDL disponível em:** `http://localhost:8081/ws/alerta.wsdl`
-
-### 4. Iniciar a API REST (Porta 8080)
-```bash
-cd sentinela-orbital
-./mvnw spring-boot:run
-```
-- **Documentação Interativa (Swagger):** `http://localhost:8080/swagger-ui.html`
+O Docker Compose irá orquestrar a inicialização na ordem correta:
+1.  **PostgreSQL:** Sobe o banco de dados.
+2.  **Sentinela SOAP:** Aguarda o banco estar pronto e inicia o serviço.
+3.  **Sentinela Orbital:** Aguarda o serviço SOAP estar saudável (healthcheck via WSDL) para então iniciar a API REST.
 
 ---
 
-## 📖 Documentação das APIs
+## 📖 Documentação e Acesso
 
-### API REST (Sentinela Orbital)
-- **Autenticação:** `/api/auth/**` (Permitido sem token)
-- **Regiões:** `/api/regioes` (CRUD completo de regiões monitoradas)
-- **Leituras:** `/api/leituras` (Recebe dados climáticos e integra com SOAP)
-- **Previsão:** `/api/previsao` (Consome dados XML do CPTEC/INPE)
-- **Alertas:** `/api/alertas` (Lista alertas ativos gerados pelo sistema)
+### Portas e Endpoints
+- **API REST (Orbital):** `http://localhost:8080`
+  - **Swagger UI:** `http://localhost:8080/swagger-ui.html`
+- **Web Service SOAP:** `http://localhost:8081/ws`
+  - **WSDL:** `http://localhost:8081/ws/alerta.wsdl`
 
-### Web Service SOAP (Sentinela SOAP)
-- **Operação `processarLeitura`:** Calcula o risco HRI e gera alertas automáticos.
-- **Operação `consultarAlertas`:** Consulta técnica de alertas para integração sistêmica.
-- *Detalhes técnicos em:* `DOCUMENTACAO_SOAP.md`
+### Operações SOAP
+- Detalhes técnicos e exemplos de XML podem ser encontrados em: `DOCUMENTACAO_SOAP.md`
 
 ---
 
